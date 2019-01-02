@@ -45,6 +45,12 @@ class DinoGameRunner:
     def _dino_crashed(self):
         return self.driver.execute_script("return Runner.instance_.crashed")
 
+    def _dino_stop(self):
+        self.driver.execute_script("Runner.instance_.stop()")
+
+    def _dino_start(self):
+        self.driver.execute_script("Runner.instance_.play()")
+
     def _get_dino_params(self):
         return {
             "distance": self._get_dino_distance(),
@@ -85,9 +91,14 @@ class DinoGameRunner:
             self._make_initial_jump()
 
         while not self._dino_crashed():
+
+            self._dino_stop()
             dino_params = self._get_dino_params()
+            self._dino_start()
+
             if ai:
                 ai.perform_action(dino_params)
+
             if dataset_extractor:
                 dataset_extractor.update_dino_params(dino_params)
 
