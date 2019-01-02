@@ -719,7 +719,7 @@
                 e.type == Runner.events.MOUSEDOWN;
 
             if (this.isRunning() && isjumpKey) {
-                this.tRex.endJump();
+                // this.tRex.endJump();
             } else if (Runner.keycodes.DUCK[keyCode]) {
                 this.tRex.speedDrop = false;
                 this.tRex.setDuck(false);
@@ -734,8 +734,8 @@
                 }
             } else if (this.paused && isjumpKey) {
                 // Reset the jump state
-                this.tRex.reset();
-                this.play();
+                // this.tRex.reset();
+                // this.play();
             }
         },
 
