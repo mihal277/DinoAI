@@ -128,8 +128,6 @@ class FreezingGameRunner:
         self.press_key("space")
 
     def _initiate_driver(self):
-        if self._driver is not None:
-            self.exit()
         self._driver = Firefox()
         self._driver.set_window_size(WINDOW_WIDTH, WINDOW_HEIGHT)
 

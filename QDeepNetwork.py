@@ -3,6 +3,7 @@ import os
 import random
 import time
 
+import argparse
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Conv2D, Dense, Flatten
@@ -102,7 +103,7 @@ class TrainingSupervisor:
         # print(action['desc'])
         return action['key']
 
-    def train(self, batch_size=32):
+    def train(self, batch_size):
         self._game_runner.start(self._initial_delay)
 
         i = 1
@@ -134,10 +135,11 @@ class TrainingSupervisor:
         self._game_runner.exit()
 
         self._scores.append(score)
-        print('Finished game with score of ' + score)
 
         self._qnagent.remember(previous_state, previous_action, score, None, True)
         self._qnagent.replay(batch_size)
+
+        return score
 
 
     def get_high_scores(self, count=10):
@@ -150,13 +152,3 @@ class TrainingSupervisor:
         else:
             s = self._scores
         return sum(s) / len(s)
-
-if __name__ == '__main__':
-    working_dir = os.path.dirname(os.path.realpath(__file__))
-    t_rex_runner_url = "file://" + working_dir + "/t-rex-runner/index.html"
-
-    qnagent = QNAgent(input_shape=(150,600,1))
-    game_runner = FreezingGameRunner(t_rex_runner_url)
-
-    trainer = TrainingSupervisor(qnagent, game_runner)
-    trainer.train()
