@@ -13,6 +13,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--output_weights', '-o', action='store')
     parser.add_argument('--training_sessions', '-n', type=int, action='store')
+    parser.add_argument('--headless', action='store_true', default=False)
     parser.add_argument('--input_weights', '-i', action='store', required=False)
     parser.add_argument('--replay_batch_size', '-r', action='store', type=int, default=32)
     parser.add_argument('--game_path', action='store', default=t_rex_runner_url)
@@ -25,7 +26,7 @@ if __name__ == '__main__':
         qnagent.load(args.input_weights)
         print('=== Initial weights loaded from', args.input_weights)
 
-    game_runner = FreezingGameRunner(args.game_path)
+    game_runner = FreezingGameRunner(args.game_path, args.headless)
     training_supervisor = TrainingSupervisor(qnagent, game_runner)
 
     print('=== Begin', args.training_sessions, 'sessions of training')

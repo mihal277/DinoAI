@@ -5,6 +5,7 @@ from PIL import Image
 from selenium.webdriver import Firefox
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 
 
 WINDOW_WIDTH = 1000
@@ -120,15 +121,18 @@ class FreezingGameRunner:
         'arrown_down': Keys.ARROW_DOWN
     }
 
-    def __init__(self, game_path):
+    def __init__(self, game_path, headless=False):
         self._game_path = game_path
+        self._options = Options()
+        if headless:
+            self._options.add_argument('--headless')
         self._driver = None
 
     def _make_initial_jump(self):
         self.press_key("space")
 
     def _initiate_driver(self):
-        self._driver = Firefox()
+        self._driver = Firefox(firefox_options=self._options)
         self._driver.set_window_size(WINDOW_WIDTH, WINDOW_HEIGHT)
 
     def _game_resume(self):
