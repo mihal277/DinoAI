@@ -1,4 +1,4 @@
-from DatasetExtractor import ImageAndSpeedDatasetExtractor
+from DatasetExtractor import MultipleImagesDatasetExtractor
 from DinoGameRunner import DinoGameRunner
 
 import argparse
@@ -14,7 +14,6 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir", "-o", action="store", default=".")
     args = parser.parse_args()
 
-
     game_runner = DinoGameRunner(args.game_path)
-    extractor = ImageAndSpeedDatasetExtractor(game_runner, args.output_dir)
+    extractor = MultipleImagesDatasetExtractor(game_runner, args.output_dir, 4)
     game_runner.run_game(dataset_extractor=extractor)
