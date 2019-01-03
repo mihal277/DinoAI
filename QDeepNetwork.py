@@ -17,7 +17,7 @@ class QNAgent:
         self._output_shape = output_shape
         self._memory = deque(maxlen=5000)
         self._gamma = 0.95  # discount rate
-        self._epsilon = 0.5  # exploration rate
+        self._epsilon = 0.2  # exploration rate
         self._epsilon_min = 0.001
         self._epsilon_decay = 0.995
         self._learning_rate = 0.001
@@ -85,7 +85,7 @@ class TrainingSupervisor:
         'key': 'arrow_down'
     }]
 
-    def __init__(self, qnagent, game_runner, sample_delay=0.005, initial_delay=2):
+    def __init__(self, qnagent, game_runner, sample_delay=0.1, initial_delay=4):
         self._qnagent = qnagent
         self._game_runner = game_runner
         self._sample_delay = sample_delay  # how often the screenshots will be taken in sec
@@ -136,7 +136,7 @@ class TrainingSupervisor:
 
         self._scores.append(score)
 
-        self._qnagent.remember(previous_state, previous_action, score, None, True)
+        self._qnagent.remember(previous_state, previous_action, -100, None, True)
         self._qnagent.replay(batch_size)
 
         return score

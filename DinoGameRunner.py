@@ -175,7 +175,8 @@ class FreezingGameRunner:
 
         self._make_initial_jump()
 
-        time.sleep(seconds)
+        if seconds > 0:
+            time.sleep(seconds)
 
         if not self.is_crashed():
             self._game_pause()
