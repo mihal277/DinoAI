@@ -23,12 +23,10 @@ class DinoGameRunner:
         self.game_path = game_path
 
     def _get_dino_distance(self):
-        digits = self.driver.execute_script(
-            "return Runner.instance_.distanceMeter.digits"
+        return self.driver.execute_script(
+            "return Runner.instance_.distanceMeter"
+            ".getActualDistance(Runner.instance_.distanceRan)"
         )
-        if not digits:
-            return 0
-        return int(''.join(digits))
 
     def _get_dino_state(self):
         if self.driver.execute_script("return Runner.instance_.tRex.jumping"):
