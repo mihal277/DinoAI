@@ -51,6 +51,9 @@ class DinoGameRunner:
     def _dino_start(self):
         self.driver.execute_script("Runner.instance_.play()")
 
+    def _become_immortal(self):
+        self.driver.execute_script("Runner.prototype.gameOver = function(){}")
+
     def _get_dino_params(self):
         return {
             "distance": self._get_dino_distance(),
@@ -84,8 +87,12 @@ class DinoGameRunner:
                  ai=None,
                  dataset_extractor=None,
                  exit_on_crash=True,
-                 make_initial_jump=True):
+                 make_initial_jump=True,
+                 immortal=False):
         self.driver.get(self.game_path)
+
+        if immortal:
+            self._become_immortal()
 
         if make_initial_jump:
             self._make_initial_jump()
