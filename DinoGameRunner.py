@@ -97,9 +97,9 @@ class DinoGameRunner:
 
         while not self._dino_crashed():
 
-            self._dino_stop()
+            # self._dino_stop()
             dino_params = self._get_dino_params()
-            self._dino_start()
+            # self._dino_start()
 
             if ai:
                 ai.perform_action(dino_params)
