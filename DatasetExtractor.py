@@ -70,7 +70,7 @@ class ImageAndSpeedDatasetExtractor(DatasetExtractor):
     def dump_dataset(self):
         super().dump_dataset()
         self.speeds = np.array(self.speeds)
-        np.save(self.directory / "speeds.npy", self.dataset_x)
+        np.save(self.directory / "speeds.npy", self.speeds)
 
 
 class MultipleImagesDatasetExtractor(DatasetExtractor):
@@ -78,6 +78,7 @@ class MultipleImagesDatasetExtractor(DatasetExtractor):
         super().__init__(runner, directory)
         self.last_screenshots = deque()
         self.n_images = n_images
+        self.speeds = []
 
     def add_screenshot(self, screenshot):
         if len(self.last_screenshots) == self.n_images:
@@ -98,6 +99,8 @@ class MultipleImagesDatasetExtractor(DatasetExtractor):
         action = self._determine_action()
         self.dataset_y.append(action)
 
+        self.speeds.append(self.current_dino_params["speed"])
+
     def dump_dataset(self):
         self.dataset_x = np.array(
             [np.array([np.array(img) for img in imgs_set])
@@ -106,4 +109,10 @@ class MultipleImagesDatasetExtractor(DatasetExtractor):
         self.dataset_y = np.array(self.dataset_y)
         np.save(self.directory / "x.npy", self.dataset_x)
         np.save(self.directory / "y.npy", self.dataset_y)
+
+        self.speeds = np.array(self.speeds)
+        np.save(self.directory / "speeds.npy", self.speeds)
+
+
+
 
