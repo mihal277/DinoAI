@@ -8,7 +8,7 @@ if __name__ == "__main__":
     os.system("rm output/*")
     game = Game()
     data_collector = DataCollector(game)
-    INTERVAL = 0.01
+    INTERVAL = 0.03
     try:
         while True:
             if game.is_crashed():
@@ -18,3 +18,4 @@ if __name__ == "__main__":
                 time.sleep(INTERVAL)
     except Exception:
         game.end()
+        raise Exception
