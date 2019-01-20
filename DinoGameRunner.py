@@ -2,10 +2,17 @@ from io import BytesIO
 import time
 
 from PIL import Image
-from selenium.webdriver import Firefox
+from selenium.webdriver import Firefox, Chrome
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
+
+import numpy as np
+import base64
+from io import BytesIO
+
+import cv2
+from PIL import Image
 
 
 WINDOW_WIDTH = 1000
@@ -20,7 +27,7 @@ class DinoState:
 
 class DinoGameRunner:
     def __init__(self, game_path):
-        self.driver = Firefox()
+        self.driver = Chrome()
         self.driver.set_window_size(WINDOW_WIDTH, WINDOW_HEIGHT)
         self.game_path = game_path
 
@@ -65,16 +72,10 @@ class DinoGameRunner:
         self.press_key("space")
 
     def take_screenshot(self):
-        canvas = self.driver.find_element_by_class_name("runner-canvas")
-        location = canvas.location_once_scrolled_into_view
-        size = canvas.size
-        screenshot = self.driver.get_screenshot_as_png()
-        im = Image.open(BytesIO(screenshot))
-        left = location['x']
-        top = location['y']
-        right = location['x'] + size['width']
-        bottom = location['y'] + size['height']
-        return im.crop((left, top, right, bottom))
+        getbase64Script = "canvasRunner = document.getElementById('runner-canvas'); return canvasRunner.toDataURL().substring(22)"
+        image_b64 = self.driver.execute_script(getbase64Script)
+        screen = np.array(Image.open(BytesIO(base64.b64decode(image_b64))))
+        return screen
 
     def press_key(self, key="space"):
         key = {
@@ -90,7 +91,7 @@ class DinoGameRunner:
                  make_initial_jump=True,
                  immortal=False):
         self.driver.get(self.game_path)
-
+        self.driver.execute_script("document.getElementsByClassName('runner-canvas')[0].id = 'runner-canvas';")
         if immortal:
             self._become_immortal()
 
@@ -99,9 +100,9 @@ class DinoGameRunner:
 
         while not self._dino_crashed():
 
-            self._dino_stop()
+            # self._dino_stop()
             dino_params = self._get_dino_params()
-            self._dino_start()
+            # self._dino_start()
 
             if ai:
                 ai.perform_action(dino_params)
