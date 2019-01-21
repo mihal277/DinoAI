@@ -10,11 +10,14 @@ if __name__ == "__main__":
     data_collector = DataCollector(game)
     INTERVAL = 0.03
     MAX_DISTANCE = 1400  # After this dino is moving with max speed
+    MAX_FRAMES = 10000
     try:
         while True:
             if game.is_crashed():
+                print('Collected (valid:', data_collector.valid_counter,\
+                    ', total:', data_collector.counter, ')')
                 game.restart()
-                if data_collector.counter > 20000:
+                if data_collector.valid_counter > MAX_FRAMES:
                     raise KeyboardInterrupt
             elif data_collector.get_dino_distance() > MAX_DISTANCE:
                 game.toggle_bot()

@@ -15,6 +15,7 @@ class Actions:
     NOTHING = 0
     JUMP = 1
     DUCK = 2
+    ABORT = 3
 
 
 def get_dino_states(output_dir):
@@ -46,13 +47,14 @@ def make_four_pictures_dataset(output_path, max_file_len):
         im = cv2.imread(str(output_dir / f"{str(i)}.png"), 0)
         add_screenshot_to_list(im, last_screenshots)
         if len(last_screenshots) == 4:
-            X.append(
-                np.array([screenshot for screenshot in last_screenshots])
-            )
             action = determine_action(i, dino_states)
-            y.append(action)
-            distances.append(dino_states[i]["distance"])
-            speeds.append(dino_states[i]["speed"])
+            if action != Actions.ABORT:
+                X.append(
+                    np.array([screenshot for screenshot in last_screenshots])
+                )
+                y.append(action)
+                distances.append(dino_states[i]["distance"])
+                speeds.append(dino_states[i]["speed"])
     if len(y) and len(last_screenshots) == 4:
         dump_dataset("f" + str(output_file_idx), output_dir, X, y, (len(X), 4, X[0][0].shape[0], X[0][0].shape[1]), distances, speeds)
 
@@ -76,6 +78,8 @@ def determine_action(i, dino_states):
         return Actions.JUMP
     if curr_state == DinoState.DUCKING or next_state == DinoState.DUCKING:
         return Actions.DUCK
+    if curr_state == DinoState.JUMPING:
+        return Actions.ABORT
     return Actions.NOTHING
 
 
@@ -93,11 +97,12 @@ def make_timestamp_dataset(output_path, max_file_len):
             output_file_idx += 1
             X, y, distances, speeds = [], [], [], []
         im = cv2.imread(str(output_dir / f"{str(i)}.png"), 0)
-        X.append(im)
         action = determine_action(i, dino_states)
-        y.append(action)
-        distances.append(dino_states[i]["distance"])
-        speeds.append(dino_states[i]["speed"])
+        if action != Actions.ABORT:
+            X.append(im)
+            y.append(action)
+            distances.append(dino_states[i]["distance"])
+            speeds.append(dino_states[i]["speed"])
     if len(y):
         dump_dataset("t" + str(output_file_idx), output_dir, X, y, distances, speeds)
 

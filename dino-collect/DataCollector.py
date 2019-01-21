@@ -17,6 +17,8 @@ class DataCollector:
 
     def __init__(self, game):
         self.counter = 0
+        self.valid_counter = 0
+        self.previous_state = DinoState.RUNNING
         self.dino_states = {}
         self.driver = game.get_driver()
         self.getbase64Script = "canvasRunner = document.getElementById('runner-canvas'); return canvasRunner.toDataURL().substring(22)"
@@ -27,6 +29,9 @@ class DataCollector:
         cv2.imwrite("output/" + str(self.counter) + ".png", screen)
         self.dino_states[self.counter] = self.get_dino_params()
         self.save_obj(self.dino_states, "output/dino_states")
+        if self.previous_state != DinoState.JUMPING:
+            self.valid_counter += 1
+        self.previous_state = self.dino_states[self.counter]['dino_state']
         self.counter += 1
 
     def get_dino_distance(self):
