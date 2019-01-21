@@ -106,6 +106,7 @@ class DinoGameRunner:
 
             if ai:
                 ai.perform_action(dino_params)
+                # time.sleep(0.01)
 
             if dataset_extractor:
                 dataset_extractor.update_dino_params(dino_params)

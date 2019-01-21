@@ -69,10 +69,12 @@ class ConvNet4FramePlayer:
             return
         elif len(self.frame_queue) == 5:
             self.frame_queue.popleft()
-        if dino_params['distance'] < 35:
+        if dino_params['distance'] < 42:
+            return
+        if dino_params['dino_state'] == 'jumping':
             return
         action = self.model.predict(np.array(self.frame_queue).reshape((1, 80, 80, 4)))[0]
-        print('action', action)
+        print('action', action, action.argmax())
         if action.argmax() == 1:
             self.runner.press_key('space')
 
