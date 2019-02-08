@@ -2,7 +2,7 @@ from io import BytesIO
 import time
 
 from PIL import Image
-from selenium.webdriver import Firefox, Chrome
+from selenium.webdriver import Firefox, FirefoxProfile
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
@@ -27,7 +27,10 @@ class DinoState:
 
 class DinoGameRunner:
     def __init__(self, game_path):
-        self.driver = Chrome()
+        fp = FirefoxProfile()
+
+        fp.add_extension(extension='uBlock0_1.17.7b1.firefox.signed.xpi')
+        self.driver = Firefox(firefox_profile=fp)
         self.driver.set_window_size(WINDOW_WIDTH, WINDOW_HEIGHT)
         self.game_path = game_path
 
@@ -84,6 +87,12 @@ class DinoGameRunner:
         }[key]
         ActionChains(self.driver).key_down(key).perform()
 
+    def _make_background_white(self):
+        self.driver.execute_script("document.body.style.backgroundColor = 'white';")
+
+    def _set_activate_bot(self):
+        self.driver.find_element_by_id("botStatus").click()
+
     def run_game(self,
                  ai=None,
                  dataset_extractor=None,
@@ -91,7 +100,10 @@ class DinoGameRunner:
                  make_initial_jump=True,
                  immortal=False):
         self.driver.get(self.game_path)
-        self.driver.execute_script("document.getElementsByClassName('runner-canvas')[0].id = 'runner-canvas';")
+
+        self._make_background_white()
+        self._set_activate_bot()
+
         if immortal:
             self._become_immortal()
 
@@ -102,7 +114,6 @@ class DinoGameRunner:
 
             # self._dino_stop()
             dino_params = self._get_dino_params()
-            # self._dino_start()
 
             if ai:
                 ai.perform_action(dino_params)
@@ -110,6 +121,7 @@ class DinoGameRunner:
 
             if dataset_extractor:
                 dataset_extractor.update_dino_params(dino_params)
+            # self._dino_start()
 
         if dataset_extractor:
             dataset_extractor.dump_dataset()

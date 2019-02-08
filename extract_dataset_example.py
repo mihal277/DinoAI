@@ -1,4 +1,4 @@
-from DatasetExtractor import MultipleImagesDatasetExtractor
+from DatasetExtractor import MultipleImagesDatasetExtractor, ImageAndSpeedDatasetExtractor
 from DinoGameRunner import DinoGameRunner
 
 import argparse
@@ -6,7 +6,8 @@ import os
 
 if __name__ == "__main__":
     working_dir = os.path.dirname(os.path.realpath(__file__))
-    t_rex_runner_url = "file://" + working_dir + "/t-rex-runner/index.html"
+    # t_rex_runner_url = "file://" + working_dir + "/t-rex-runner/index.html"
+    t_rex_runner_url = "https://elgoog.im/t-rex/"
 
     parser = argparse.ArgumentParser(description='Dataset Extraction Example')
 
@@ -15,5 +16,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     game_runner = DinoGameRunner(args.game_path)
-    extractor = MultipleImagesDatasetExtractor(game_runner, args.output_dir, 4)
-    game_runner.run_game(dataset_extractor=extractor)
+    extractor = ImageAndSpeedDatasetExtractor(game_runner, args.output_dir)
+    game_runner.run_game(dataset_extractor=extractor, immortal=False)
