@@ -36,11 +36,9 @@ class NetworkTrainer:
         if observe:
             OBSERVE = 999999999  # We keep observe, never train
             epsilon = final_epsilon
-            print("Now we load weight")
             model.load_weights("model.h5")
             adam = Adam(lr=learning_rate)
             model.compile(loss='mse', optimizer=adam)
-            print("Weight load successfully")
         else:  # We go to training mode
             OBSERVE = observation
             epsilon = game_wrapper.load_obj("epsilon")
@@ -118,8 +116,8 @@ class NetworkTrainer:
             s_t = initial_state if terminal else s_t1  # reset game to initial frame if terminate
             t = t + 1
 
-            # save progress every 1000 iterations
-            if t % 1000 == 0:
+            # save progress every 10000 iterations
+            if t % 10000 == 0:
                 print("Now we save model")
                 game_state._game.pause()  # pause game while saving to filesystem
                 model.save_weights("model.h5", overwrite=True)

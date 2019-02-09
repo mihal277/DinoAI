@@ -1,3 +1,5 @@
+import argparse
+
 from DinoAgent import DinoAgent
 from Game import Game
 from GameState import GameState
@@ -16,10 +18,15 @@ replay_memory = 50000  # number of previous transitions to remember
 batch = 16  # size of minibatch
 frame_per_action = 1
 learning_rate = 1e-4
-img_rows , img_cols = 80,80
+img_rows, img_cols = 80, 80
 img_channels = 4  # We stack 4 frames
 
 if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--train', action='store_true', default=False)
+    args = parser.parse_args()
+
     game_wrapper = GameWrapper()
     game = Game()
     dino_agent = DinoAgent(game)
@@ -29,6 +36,6 @@ if __name__ == "__main__":
     try:
         network_trainer.train_network(model, game_state, game_wrapper, actions, initial_epsilon, final_epsilon,
                                       learning_rate, observation, replay_memory, frame_per_action, batch, gamma,
-                                      explore, observe=False)
+                                      explore, observe=(not args.train))
     except StopIteration:
         game.end()

@@ -13,7 +13,6 @@ class Game:
         self._driver = webdriver.Chrome(executable_path=self.chrome_driver_path,chrome_options=chrome_options)
         self._driver.set_window_position(x=-10,y=0)
         self._driver.get('chrome://dino')
-        self._driver.execute_script("Runner.config.ACCELERATION=0")
         self._driver.execute_script(self.init_script)
 
     def get_crashed(self):
