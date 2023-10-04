@@ -6,7 +6,7 @@
 #
 numpy==1.15.4
     # via -r requirements.in
-pillow==9.3.0
+pillow==10.0.1
     # via -r requirements.in
 selenium==3.141.0
     # via -r requirements.in
